@@ -8,20 +8,15 @@ struct P {
 
 struct ReadyQueue {
     int size;
-    // int front;
-    // int rear; 
     struct P processes[10];
 };
 
 void init(struct ReadyQueue *ready) {
-    // ready->front=0;
     ready->size=0;
-    // ready->rear=ready->size-1;
 }
 
 void setP(struct P *p1) {
 	p1->rt=p1->star-p1->arr;
-	// p1->finish=p1->star+p1->bur;
 	p1->tat=p1->finish-p1->arr;
 	p1->wt=p1->tat-p1->bur;
 }
@@ -74,72 +69,73 @@ void moveP(struct ReadyQueue *ready) {
 }
 
 int main() {
-    struct P plist[10];
+    	struct P plist[10];
 	struct ReadyQueue ready;
-    init(&ready);
-    struct P term[10];
+    	init(&ready);
+    	struct P term[10];
 
 	int i, n;
 	int totwt=0, tottat=0, totrt=0;
 
-    printf("Enter the number of processes: ");
+    	printf("Enter the number of processes: ");
 	scanf("%d", &n);
 	for(i=0; i<n; i++) {
 		printf("Enter the Process Name, Arrival Time & Burst Time: ");
 		scanf("%d%d%d", &plist[i].pn, &plist[i].arr, &plist[i].bur);
 		plist[i].print=printP;
 		plist[i].set=setP;
-        plist[i].rb=plist[i].bur;
+        	plist[i].rb=plist[i].bur;
 	}
 
 	SortArr(plist, n);
 
-    int q;
+   	int q;
 	printf("Enter the quantum time: ");
 	scanf("%d", &q);
 	
-    i=1;
+    	i=1;
 	while(plist[i].arr==plist[0].arr) {
-        pushP(&ready, plist[i]);
-        i++;
-    }
-    int current_time = ready.processes[0].arr;
-    int exe_time;
-    int pi=i; //plist
-    i=0; //term
+        	pushP(&ready, plist[i]);
+        	i++;
+    	}
+    	int current_time = ready.processes[0].arr;
+    	int exe_time;
+    	int pi=i; //plist
+    	i=0; //term
 
-    while (i<n) {
-        exe_time=1;
-        if (ready.processes[0].bur == ready.processes[0].rb)
+    	while (i<n) {
+        	exe_time=1;
+        	if (ready.processes[0].bur == ready.processes[0].rb)
 			ready.processes[0].star = current_time;
-        while(exe_time<=q) {
-            current_time++;
-            ready.processes[0].rb--;
-            exe_time++;
-            while(pi<n) {
-                if(plist[pi].arr==current_time) {
-                    pushP(&ready, plist[pi]);
-                    pi++;
-                }
-                else break;
-            }
-            if(ready.processes[0].rb==0) break;
-        }
-        if(ready.processes[0].rb==0) {
-            ready.processes[0].finish=current_time;
-            ready.processes[0].set(&ready.processes[0]);
-            term[i++]=ready.processes[0];
-            popP(&ready);
-        }
-        else moveP(&ready);
-    }
+        	while(exe_time<=q) {
+            	current_time++;
+            	ready.processes[0].rb--;
+		exe_time++;
+            	while(pi<n) {
+                	if(plist[pi].arr==current_time) {
+                    	pushP(&ready, plist[pi]);
+                    	pi++;
+                	}
+                	else break;
+            	}
+            	if(ready.processes[0].rb==0) break;
+        	}
+		
+        	if(ready.processes[0].rb==0) {
+            	ready.processes[0].finish=current_time;
+            	ready.processes[0].set(&ready.processes[0]);
+            	term[i++]=ready.processes[0];
+            	popP(&ready);
+       	 	}
+        	else moveP(&ready);
+    	}
 
-    printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tTAT\tRT\tWT\n");
+    	printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tTAT\tRT\tWT\n");
 	for(i=0; i<n; i++) {
 		term[i].print(&term[i]);
 		totwt+=term[i].wt;
 		tottat+=term[i].tat;
-        totrt+=term[i].rt;
+        	totrt+=term[i].rt;
 	}
 
 	float avewt, avetat, avert;
