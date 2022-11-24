@@ -76,12 +76,12 @@ void QSort(struct P plist[], int l, int r) {
 
 void main() {
 	struct P plist[10];
-    struct ReadyQueue ready;
-    init(&ready);
-    struct P term[10];
+    	struct ReadyQueue ready;
+    	init(&ready);
+    	struct P term[10];
 	int i, n;
 	int totwt=0, tottat=0, totrt=0;
-    int current_time=0;
+    	int current_time;
 	printf("Enter the number of processes: ");
 	scanf("%d", &n);
 	for(i=0; i<n; i++) {
@@ -92,27 +92,27 @@ void main() {
 	}
 	QSort(plist, 0, n-1);
 
-    pushP(&ready, plist[0]);
+    	pushP(&ready, plist[0]);
     
-    current_time=ready.processes[0].arr;
-    i=0; // ready
-    int j=0; // term
-    int m=1; // plist
-    while(ready.front<n) {
-        i=ready.front;
-        if(i==0) ready.processes[i].star=ready.processes[i].arr;
-        else ready.processes[i].star=term[j-1].finish;
-        ready.processes[i].set(&ready.processes[i]);
-        while(current_time<=ready.processes[i].finish && m<n) {
-            if(current_time==plist[m].arr) {
-                pushP(&ready, plist[m]);
-                m++;
-            }
-            current_time++;
-        }
-        term[j++]=ready.processes[i];
-        popP(&ready);
-    }
+    	current_time=ready.processes[0].arr;
+    	i=0; // ready
+    	int j=0; // term
+    	int m=1; // plist
+    	while(ready.front<n) {
+        	i=ready.front;
+        	if(i==0) ready.processes[i].star=ready.processes[i].arr;
+        	else ready.processes[i].star=term[j-1].finish;
+        	ready.processes[i].set(&ready.processes[i]);
+        	while(current_time<=ready.processes[i].finish && m<n) {
+            		if(current_time==plist[m].arr) {
+                		pushP(&ready, plist[m]);
+                		m++;
+            		}
+            		current_time++;
+        	}
+        	term[j++]=ready.processes[i];
+        	popP(&ready);
+    	}
 
 	
 	printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tTAT\tRT\tWT\n");
@@ -120,13 +120,13 @@ void main() {
 		term[i].print(&term[i]);
 		totwt+=term[i].wt;
 		tottat+=term[i].tat;
-        totrt+=term[i].rt;
+        	totrt+=term[i].rt;
 	}
 
 	float avewt, avetat, avert;
 	avewt=(float) totwt/n;
 	avetat=(float) tottat/n;
-    avert=(float) totrt/n;
+    	avert=(float) totrt/n;
 	printf("Average waiting time: %0.3f\nAverage response time: %0.3f\nAverage turnaround time: %0.3f\n", avewt, avert, avetat);
 
 }
