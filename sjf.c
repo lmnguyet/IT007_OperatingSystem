@@ -8,20 +8,15 @@ struct P {
 
 struct ReadyQueue {
     int size;
-    // int front;
-    // int rear; 
     struct P processes[10];
 };
 
 void init(struct ReadyQueue *ready) {
-    // ready->front=0;
     ready->size=0;
-    // ready->rear=ready->size-1;
 }
 
 void setP(struct P *p1) {
 	p1->rt=p1->star-p1->arr;
-	// p1->finish=p1->star+p1->bur;
 	p1->tat=p1->finish-p1->arr;
 	p1->wt=p1->tat-p1->bur;
 }
@@ -30,29 +25,15 @@ void printP(const struct P *p1) {
 	printf("%d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\n", p1->pn, p1->arr, p1->bur, p1->star, p1->finish, p1->tat, p1->rt, p1->wt);
 }
 
-void swap(struct P *a, struct P *b) {
-	int tmp=a->arr;
-	a->arr=b->arr;
-	b->arr=tmp;
-
-	tmp=a->pn;
-	a->pn=b->pn;
-	b->pn=tmp;
-
-	tmp=a->bur;
-	a->bur=b->bur;
-	b->bur=tmp;
-}
-
 void SortArr(struct P plist[], int n) {
 	int i, j;
 	for(i=0; i<n; i++) {
 		for(j=i+1; j<n; j++) {
 			if(plist[i].arr>plist[j].arr) {
 				struct P P0;
-                P0=plist[i];
-                plist[i]=plist[j];
-                plist[j]=P0;		
+                		P0=plist[i];
+                		plist[i]=plist[j];
+                		plist[j]=P0;		
 			}
 		}
 	}
@@ -64,9 +45,9 @@ void SortBur(struct P plist[], int l, int r) {
 		for(j=i+1; j<r; j++){
 			if(plist[i].bur>plist[j].bur) {
 				struct P P0;
-                P0=plist[i];
-                plist[i]=plist[j];
-                plist[j]=P0;		
+                		P0=plist[i];
+                		plist[i]=plist[j];
+                		plist[j]=P0;		
 			}
 		}
 	}
@@ -91,7 +72,7 @@ int main() {
 	int i, n;
 	int totwt=0, tottat=0, totrt=0;
 
-    printf("Enter the number of processes: ");
+    	printf("Enter the number of processes: ");
 	scanf("%d", &n);
 	for(i=0; i<n; i++) {
 		printf("Enter the Process Name, Arrival Time & Burst Time: ");
@@ -103,12 +84,11 @@ int main() {
 
 	SortArr(plist, n);
 	
-    i=0;
+    	i=0;
 	while(plist[i].arr==plist[0].arr) {
         pushP(&ready, plist[i]);
         i++;
-    }
-    // if(i!=1) SortBur(ready.processes, 0, i-1);
+	}
 
     int current_time = ready.processes[0].arr;
     int pi=i; //plist
@@ -118,31 +98,21 @@ int main() {
 		if (ready.processes[0].bur == ready.processes[0].rb)
 			ready.processes[0].star = current_time;
 		current_time++;
-        ready.processes[0].rb--;
-        // if(term[0].pn==-1) ready.processes[0].star=ready.processes[0].arr;
-        // else {
-		// 	if(ready.size>1) SortBur(ready.processes, 0, ready.size-1);
-		// 	ready.processes[0].star=term[i-1].finish;
-		// }
-        // ready.processes[0].set(&ready.processes[0]);
-        // while(current_time<=ready.processes[0].finish) {
-			while (pi<n) {
-				if(current_time==plist[pi].arr) {
-					pushP(&ready, plist[pi]);
-					SortBur(ready.processes, 1, ready.size);
-					pi++;
-				}
-				else break;
+        	ready.processes[0].rb--;
+		while (pi<n) {
+			if(current_time==plist[pi].arr) {
+				pushP(&ready, plist[pi]);
+				SortBur(ready.processes, 1, ready.size);
+				pi++;
 			}
-            // current_time++;
-        // }
+			else break;
+		}
         if(ready.processes[0].rb==0) {
             ready.processes[0].finish=current_time;
             ready.processes[0].set(&ready.processes[0]);
             term[i++]=ready.processes[0];
             popP(&ready);
         }
-        // popP(&ready);
     }
 
     printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tTAT\tRT\tWT\n");
