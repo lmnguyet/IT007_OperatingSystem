@@ -8,20 +8,15 @@ struct P {
 
 struct ReadyQueue {
     int size;
-    // int front;
-    // int rear; 
     struct P processes[10];
 };
 
 void init(struct ReadyQueue *ready) {
-    // ready->front=0;
     ready->size=0;
-    // ready->rear=ready->size-1;
 }
 
 void setP(struct P *p1) {
 	p1->rt=p1->star-p1->arr;
-	// p1->finish=p1->star+p1->bur;
 	p1->tat=p1->finish-p1->arr;
 	p1->wt=p1->tat-p1->bur;
 }
