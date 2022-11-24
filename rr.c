@@ -25,20 +25,6 @@ void printP(const struct P *p1) {
 	printf("%d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\n", p1->pn, p1->arr, p1->bur, p1->star, p1->finish, p1->tat, p1->rt, p1->wt);
 }
 
-void swap(struct P *a, struct P *b) {
-	int tmp=a->arr;
-	a->arr=b->arr;
-	b->arr=tmp;
-
-	tmp=a->pn;
-	a->pn=b->pn;
-	b->pn=tmp;
-
-	tmp=a->bur;
-	a->bur=b->bur;
-	b->bur=tmp;
-}
-
 void SortArr(struct P plist[], int n) {
 	int i, j;
 	for(i=0; i<n; i++) {
