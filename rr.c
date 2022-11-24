@@ -43,9 +43,8 @@ void SortArr(struct P plist[], int n) {
 	int i, j;
 	for(i=0; i<n; i++) {
 		for(j=i+1; j<n; j++) {
-			if(plist[i].arr>plist[j].arr) {
+			if(plist[i].arr>plist[j].arr)
 				swap(&plist[i], &plist[j]);		
-			}
 		}
 	}
 }
