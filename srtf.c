@@ -25,13 +25,6 @@ void printP(const struct P *p1) {
 	printf("%d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\t%6d\n", p1->pn, p1->arr, p1->bur, p1->star, p1->finish, p1->tat, p1->rt, p1->wt);
 }
 
-// void swap(struct P *a, struct P *b) {
-// 	struct P *tmp;
-//     tmp=a;
-//     a=b;
-//     b=tmp;
-// }
-
 void SortArr(struct P plist[], int n) {
 	int i, j;
 	for(i=0; i<n; i++) {
@@ -70,14 +63,6 @@ void popP(struct ReadyQueue *ready) {
     ready->size--;
 }
 
-// void moveP(struct ReadyQueue *ready) {
-//     struct P P0;
-//     P0=ready->processes[0];
-//     for(int i=0; i<ready->size-1; i++)
-//         ready->processes[i]=ready->processes[i+1];
-//     ready->processes[ready->size-1]=P0;
-// }
-
 int main() {
     struct P plist[10];
 	struct ReadyQueue ready;
@@ -104,7 +89,7 @@ int main() {
         pushP(&ready, plist[i]);
         i++;
     }
-    // printf("%6d %6d", ready.size, i);
+    
     int current_time = ready.processes[0].arr;
     int pi=i; //plist
     i=0; //term
@@ -113,7 +98,7 @@ int main() {
         SortRB(ready.processes, 0, ready.size);
         if (ready.processes[0].bur == ready.processes[0].rb)
 			ready.processes[0].star = current_time;
-        // printf("%6d %6d", ready.processes[0].star, ready.processes[0].pn);
+        
         current_time++;
         ready.processes[0].rb--;
         while(pi<n) {
@@ -129,7 +114,7 @@ int main() {
             term[i++]=ready.processes[0];
             popP(&ready);
         }
-        // for(int m=0; m<ready.size; m++) printf("%6d", ready.processes[m].pn);
+       
     }
 
     printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tTAT\tRT\tWT\n");
