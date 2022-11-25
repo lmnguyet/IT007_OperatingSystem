@@ -87,6 +87,7 @@ int main() {
     	i=0;
 	while(plist[i].arr==plist[0].arr) {
         pushP(&ready, plist[i]);
+	SortBur(ready.processes, 0, ready.size);
         i++;
 	}
 
