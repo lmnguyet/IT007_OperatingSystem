@@ -45,7 +45,7 @@ void SortBur(struct P plist[], int l, int n) {
     for (i = l+1; i < n; i++) {
         key = plist[i];
         j = i - 1;
-        while (j >= 0 && plist[j].bur > key.bur) {
+        while (j >= l && plist[j].bur > key.bur) {
             plist[j + 1] = plist[j];
             j = j - 1;
         }
