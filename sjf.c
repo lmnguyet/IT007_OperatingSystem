@@ -39,19 +39,20 @@ void SortArr(struct P plist[], int n) {
 	}
 }
 
-void SortBur(struct P plist[], int l, int r) {
+void SortBur(struct P plist[], int l, int n) {
 	int i, j;
-	for(i=l; i<r-1; i++){
-		for(j=i+1; j<r; j++){
-			if(plist[i].bur>plist[j].bur) {
-				struct P P0;
-                		P0=plist[i];
-                		plist[i]=plist[j];
-                		plist[j]=P0;		
-			}
-		}
-	}
+    struct P key;
+    for (i = l+1; i < n; i++) {
+        key = plist[i];
+        j = i - 1;
+        while (j >= 0 && plist[j].bur > key.bur) {
+            plist[j + 1] = plist[j];
+            j = j - 1;
+        }
+        plist[j + 1] = key;
+    }
 }
+
 
 void pushP(struct ReadyQueue *ready, struct P p1) {
     ready->processes[ready->size++]=p1;
