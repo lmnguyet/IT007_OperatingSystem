@@ -9,7 +9,7 @@ The pointers *print and *set point to the printP(used to print the information o
 and setP function(used to calculate its rt, wt and tat). 
 */
 struct P {
-	int pn, arr, bur, star, finish, tat, wt, rt, rb;
+	int pn, arr, bur, star, finish, rt, wt, tat, rb;
 	void (*print)(const struct P*);
 	void (*set)(struct P*);
 };
@@ -67,13 +67,13 @@ that has the same burst time as it but has arrived before
 (in case there're processes having the same burst time,
 the one coming first will run first). 
 */
-void SortRB(struct P plist[], int n) {
+void SortBur(struct P plist[], int l, int n) {
 	int i, j;
     struct P key;
-    for (i = 1; i < n; i++) {
+    for (i = l+1; i < n; i++) {
         key = plist[i];
         j = i - 1;
-        while (j >= 0 && plist[j].rb > key.rb) {
+        while (j >= l && plist[j].bur > key.bur) {
             plist[j + 1] = plist[j];
             j = j - 1;
         }
@@ -88,7 +88,7 @@ void pushP(struct ReadyQueue *ready, struct P p1) {
 
 /* 
 The popP() function pops the first process, which is done running, out of the ready queue.
-The next process in the queue becomes the first one and starts running.
+The next process in the queue becomes the first one and soon starts running.
 */
 void popP(struct ReadyQueue *ready) {
     for(int i=0; i<ready->size-1; i++)
@@ -98,22 +98,23 @@ void popP(struct ReadyQueue *ready) {
 
 int main() {
 
-    /* Define a process array, called plist[]. */
+	/* Define a process array, called plist[]. */
     struct P plist[10];
 
-    /* Define and initialize a ready queue. */
+	/* Define and initialize a ready queue. */
 	struct ReadyQueue ready;
     init(&ready);
 
-    /* Define a terminated array, which will contains all the done running processes. */
+	/* Define a terminated array, which will contains all the done running processes. */
     struct P term[10];
 
 	int i, n;
 
-    /* Total waiting time, total turn-around time, total response time of the processes. */
+	/* Total waiting time, total turn-around time, total response time of the processes. */
 	int totwt=0, tottat=0, totrt=0;
 
-    /*** GET THE INPUT ***/
+
+	/*** GET THE INPUT ***/
 	/* Input of a process includes process name, arrival time and burst time. */
     printf("Enter the number of processes: ");
 	scanf("%d", &n);
@@ -122,66 +123,66 @@ int main() {
 		scanf("%d%d%d", &plist[i].pn, &plist[i].arr, &plist[i].bur);
 		plist[i].print=printP;
 		plist[i].set=setP;
-        /* rb has inital value the same as burst time value. */
-        plist[i].rb=plist[i].bur;
+		/* rb has inital value the same as burst time value. */
+		plist[i].rb=plist[i].bur;
 	}
 
-    /* Sort the input in ascending order by arrival time. */
+	/* Sort the input in ascending order by arrival time. */
 	SortArr(plist, n);
 	/* plist[] now contains the processes with increasing arrival time 
 	(the same arrival times are not sorted). */
 
-    /*
+	/*
 	Push the process which arrives earliest into the ready queue.
 
 	Use the while loop to push all the processes having the same smallest arrival time
-	into ready queue and sort them by (remaining) burst time. 
+	into ready queue and sort them by burst time. 
 	*/
     i=0;
 	while(plist[i].arr==plist[0].arr) {
         pushP(&ready, plist[i]);
-        SortRB(ready.processes, ready.size);
+		SortBur(ready.processes, 0, ready.size);
         i++;
     }
-    
-    /*** THE READY QUEUE IS SUPPOSED TO BE A PROCESS ARRAY 
+
+	/*** WE'RE SUPPOSED THE READY QUEUE IS A PROCESS ARRAY 
 	AND THE INDEX 0 OF THE ARRAY IS ALWAYS THE RUNNING PROCESS. ***/
 
 	/* The variable current_time simulates how the ready queue works in real time.
 	current_time has initial value of arrival time of the first running process. */
     int current_time = ready.processes[0].arr;
-
-    /* pi indexes to the processes in plist[] that haven't been pushed to ready queue yet. */
+	
+	/* pi indexes to the processes in plist[] that haven't been pushed to ready queue yet. */
     int pi=i; 
 
 	/* A process when popped out of ready queue will be added to term[] array at the index i, starting at 0. */
     i=0; 
 
 	/* Keep doing these handling works until all the processes are added to term[]. */
-    while (i<n) {
+    while(i<n) {
 
-        /* If a process runs for the first time, its start time is current_time. */
-        if (ready.processes[0].bur == ready.processes[0].rb)
+		/* If a process runs for the first time, its start time is current_time. */
+		if (ready.processes[0].bur == ready.processes[0].rb)
 			ready.processes[0].star = current_time;
 
-        /* When a time unit passes, remaining burst time of running process is reduced by 1. */
-        current_time++;
+		/* When a time unit passes, remaining burst time of running process is reduced by 1. */
+		current_time++;
         ready.processes[0].rb--;
 
-        /* Push all the processes arriving at current_time to ready queue and sort the queue by remaining burst time. 
+		/* Push all the processes arriving at current_time to ready queue and sort the queue by burst time. 
 		Only do this if there's any process in plist[] not been pushed into ready queue yet. */
-        while(pi<n) {
-            if(plist[pi].arr==current_time) {
-                pushP(&ready, plist[pi]);
-                SortRB(ready.processes, ready.size);
-                pi++;
-            }
-            /* If at current_time, there's no process arriving, get out of the loop 
+		while (pi<n) {
+			if(current_time==plist[pi].arr) {
+				pushP(&ready, plist[pi]);
+				SortBur(ready.processes, 1, ready.size);
+				pi++;
+			}
+			/* If at current_time, there's no process arriving, get out of the loop 
 			to continue counting current_time. */
-            else break;
-        }
+			else break;
+		}
 
-        /* If remaining burst time of the running process equals 0, it finishes at current_time. 
+		/* If remaining burst time of the running process equals 0, it finishes at current_time. 
 		So, we calculate its rt, wt, and tat via set function.
 		Then add it to term[] at the index i (increase i by 1 after that), and finally pop it out of the queue. */
         if(ready.processes[0].rb==0) {
@@ -190,10 +191,9 @@ int main() {
             term[i++]=ready.processes[0];
             popP(&ready);
         }
-
     }
 
-    /* Print the information of the terminated processes by their finishing order. 
+	/* Print the information of the terminated processes by their finishing order. 
 	Calculate the total numbers. */
     printf("\nPName\tArrtime\tBurtime\tStart\tFinish\tRT\tWT\tTAT\n");
 	for(i=0; i<n; i++) {
@@ -203,7 +203,7 @@ int main() {
         totrt+=term[i].rt;
 	}
 
-    /* Calculate the average numbers and print them. */
+	/* Calculate the average numbers and print them. */
 	float avewt, avetat, avert;
 	avewt=(float) totwt/n;
 	avetat=(float) tottat/n;
